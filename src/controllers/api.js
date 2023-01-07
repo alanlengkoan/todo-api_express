@@ -5,7 +5,6 @@ import {
     validationResult
 } from "express-validator";
 
-import mySql from "./../../src/configs/database.js";
 import {
     Todo
 } from "../models/todos.js";
