@@ -6,6 +6,9 @@ import {
 } from "express-validator";
 
 import mySql from "./../../src/configs/database.js";
+import {
+    Todo
+} from "../models/todos.js";
 
 const home = (req, res) => {
     res.status(200).json({
@@ -14,226 +17,229 @@ const home = (req, res) => {
 };
 
 const getAllTodoItem = (req, res) => {
-    mySql.query("SELECT * FROM todo", (error, results, fields) => {
-        if (error) {
-            res.status(400).json({
-                status: "Bad Request",
-                message: error['sqlMessage'],
-                data: {}
+    Todo.findAll().then((results) => {
+        if (req.query.activity_group_id === undefined) {
+            res.status(200).json({
+                status: "Success",
+                message: "Success",
+                data: results,
             });
         } else {
-            if (req.query.activity_group_id === undefined) {
-                res.status(200).json({
-                    status: "Success",
-                    message: "Success",
-                    data: results,
-                });
-            } else {
-                const activityGroupId = parseInt(req.query.activity_group_id);
+            const activityGroupId = parseInt(req.query.activity_group_id);
 
-                res.status(200).json({
-                    status: "Success",
-                    message: "Success",
-                    data: results.filter((n) => n.activity_group_id === activityGroupId),
-                });
-            }
+            res.status(200).json({
+                status: "Success",
+                message: "Success",
+                data: results.filter((n) => n.activity_group_id === activityGroupId),
+            });
         }
+    }).catch((error) => {
+        res.status(400).json({
+            status: "Bad Request",
+            message: error,
+            data: {}
+        });
     });
 };
 
 const getDetailTodoItem = (req, res) => {
     const id = parseInt(req.params.id);
 
-    mySql.query("SELECT * FROM todo", (error, results, fields) => {
-        if (error) {
-            res.status(400).json({
-                status: "Bad Request",
-                message: error['sqlMessage'],
-                data: {}
+    Todo.findAll().then((results) => {
+        const todo = results.filter((n) => n.id === id)[0];
+
+        if (todo !== undefined) {
+            res.status(200).json({
+                status: "Success",
+                message: "Success",
+                data: todo,
             });
         } else {
-            const todo = results.filter((n) => n.id === id)[0];
-
-            if (todo !== undefined) {
-                res.status(200).json({
-                    status: "Success",
-                    message: "Success",
-                    data: todo,
-                });
-            } else {
-                res.status(404).json({
-                    status: "Not Found",
-                    message: `Todo with ID ${id} Not Found!`,
-                    data: {},
-                });
-            }
+            res.status(404).json({
+                status: "Not Found",
+                message: `Todo with ID ${id} Not Found!`,
+                data: {},
+            });
         }
+    }).catch((error) => {
+        res.status(400).json({
+            status: "Bad Request",
+            message: error,
+            data: {}
+        });
     });
 };
 
-const addTodoItem = (req, res) => {
+const addTodoItem = async (req, res) => {
     const nanoid = customAlphabet('1234567890', 2);
+    const id = nanoid();
+    const {
+        title,
+        activity_group_id
+    } = req.body;
+
+    const is_active = true;
+    const priority = 'very-high';
+    const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const updated_at = created_at;
 
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        return res.status(400).json({
+        res.status(400).json({
             status: "Bad Request",
             message: errors.array()[0].msg,
             data: {}
         });
-    }
+    } else {
+        const data = {
+            id: id,
+            title: title,
+            activity_group_id: activity_group_id,
+            is_active: is_active,
+            priority: priority,
+            created_at: created_at,
+            updated_at: updated_at
+        };
 
-    const id = nanoid();
-    const title = req.body.title;
-    const activity_group_id = req.body.activity_group_id;
-    const is_active = true;
-    const priority = "very-high";
-    const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    const updated_at = created_at;
+        try {
+            const todo = await Todo.create(data);
 
-    mySql.query('INSERT INTO todo SET ?', {
-        id: id,
-        title: title,
-        activity_group_id: activity_group_id,
-        is_active: is_active,
-        priority: priority,
-        created_at: created_at,
-        updated_at: updated_at
-    }, function (error, results, fields) {
-        if (error) {
-            return res.status(400).json({
-                status: "Bad Request",
-                message: error['sqlMessage'],
-                data: {}
-            });
-        } else {
-            return res.status(200).json({
+            res.status(200).json({
                 status: "Success",
                 message: "Success",
-                data: {
-                    created_at,
-                    updated_at,
-                    id,
-                    title,
-                    activity_group_id,
-                    is_active,
-                    priority
-                }
+                data: todo.toJSON()
+            });
+        } catch (error) {
+            res.status(400).json({
+                status: "Bad Request",
+                message: error,
+                data: {}
             });
         }
-    });
+    }
 };
 
 const updTodoItem = (req, res) => {
     const id = parseInt(req.params.id);
 
-    mySql.query("SELECT * FROM todo", (error, results, fields) => {
-        if (error) {
-            res.status(400).json({
-                status: "Bad Request",
-                message: error['sqlMessage'],
-                data: {}
-            });
-        } else {
-            const todo = results.filter((n) => n.id === id)[0];
+    Todo.findAll().then(async (results) => {
+        const todo = results.filter((n) => n.id === id)[0];
 
-            if (todo !== undefined) {
+        if (todo !== undefined) {
+            const errors = validationResult(req);
 
-                const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(400).json({
+                    status: "Bad Request",
+                    message: errors.array()[0].msg,
+                    data: {}
+                });
+            } else {
+                const title = req.body.title;
+                const is_active = req.body.is_active ? 1 : 0;
+                const updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
-                if (!errors.isEmpty()) {
-                    return res.status(400).json({
+                const data = {
+                    id: id,
+                    title: title,
+                    is_active: is_active,
+                    updated_at: updated_at
+                };
+
+                try {
+                    await Todo.update(data, {
+                        where: {
+                            id: id
+                        }
+                    });
+
+                    Todo.findAll({
+                        where: {
+                            id: id
+                        }
+                    }).then((results) => {
+                        res.status(200).json({
+                            status: "Success",
+                            message: "Success",
+                            data: results[0].toJSON()
+                        });
+                    }).catch((error) => {
+                        res.status(400).json({
+                            status: "Bad Request",
+                            message: error,
+                            data: {}
+                        });
+                    });
+                } catch (error) {
+                    res.status(400).json({
                         status: "Bad Request",
-                        message: errors.array()[0].msg,
+                        message: error,
                         data: {}
                     });
                 }
-
-                const title = req.body.title;
-                const updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
-                const activity_group_id = todo.activity_group_id;
-                const priority = todo.priority;
-                const is_active = req.body.is_active ? 1 : 0;
-                const created_at = todo.created_at;
-                const deleted_at = todo.deleted_at;
-
-                mySql.query('UPDATE todo SET ? WHERE id = ?', [{
-                    title: title,
-                    is_active: req.body.is_active,
-                    updated_at: updated_at,
-                }, id], function (error, results, fields) {
-                    if (error) {
-                        return res.status(400).json({
-                            status: "Bad Request",
-                            message: error['sqlMessage'],
-                            data: {}
-                        });
-                    } else {
-                        return res.status(200).json({
-                            status: "Success",
-                            message: "Success",
-                            data: {
-                                id,
-                                activity_group_id,
-                                title,
-                                is_active,
-                                priority,
-                                created_at,
-                                updated_at,
-                                deleted_at
-                            }
-                        });
-                    }
-                });
-            } else {
-                res.status(404).json({
-                    status: "Not Found",
-                    message: `Todo with ID ${id} Not Found!`,
-                    data: {},
-                });
             }
+        } else {
+            res.status(404).json({
+                status: "Not Found",
+                message: `Todo with ID ${id} Not Found!`,
+                data: {},
+            });
         }
+    }).catch((error) => {
+        res.status(400).json({
+            status: "Bad Request",
+            message: error,
+            data: {}
+        });
     });
 };
 
 const delTodoItem = (req, res) => {
     const id = parseInt(req.params.id);
 
-    mySql.query("SELECT * FROM todo", (error, results, fields) => {
-        if (error) {
-            res.status(400).json({
-                status: "Bad Request",
-                message: error['sqlMessage'],
-                data: {}
-            });
-        } else {
-            const todo = results.filter((n) => n.id === id)[0];
+    Todo.findAll().then(async (results) => {
+        const todo = results.filter((n) => n.id === id)[0];
 
-            if (todo !== undefined) {
-                mySql.query('DELETE FROM todo WHERE id = "' + id + '"', (error, results, fields) => {
-                    if (error) {
-                        return res.status(400).json({
-                            status: "Bad Request",
-                            message: error['sqlMessage'],
-                            data: {}
-                        });
-                    } else {
-                        return res.status(200).json({
-                            status: "Success",
-                            message: "Success",
-                            data: {},
-                        });
+        if (todo !== undefined) {
+            const deleted_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+            const data = {
+                deleted_at: deleted_at
+            };
+
+            try {
+                await Todo.update(data, {
+                    where: {
+                        id: id
                     }
                 });
-            } else {
-                return res.status(404).json({
-                    status: "Not Found",
-                    message: `Todo with ID ${id} Not Found`,
-                    data: {},
+
+                res.status(200).json({
+                    status: "Success",
+                    message: "Success",
+                    data: {}
+                });
+            } catch (error) {
+                res.status(400).json({
+                    status: "Bad Request",
+                    message: error,
+                    data: {}
                 });
             }
+        } else {
+            res.status(404).json({
+                status: "Not Found",
+                message: `Todo with ID ${id} Not Found!`,
+                data: {},
+            });
         }
+    }).catch((error) => {
+        res.status(400).json({
+            status: "Bad Request",
+            message: error,
+            data: {}
+        });
     });
 };
 

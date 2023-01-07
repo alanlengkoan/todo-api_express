@@ -1,18 +1,17 @@
 import express from "express";
 
-import mySql from "./src/configs/database.js";
+import sequelize from "./src/configs/database.js";
 import router from "./src/routes/routes.js";
 
 const app = express();
 
 // untuk cek koneksi database
-mySql.connect((err) => {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log("Database terkoneksi!");
-    }
-});
+try {
+  await sequelize.authenticate();
+  console.log('Database terkoneksi!');
+} catch (error) {
+  console.error('Unable to connect to the database:', error);
+}
 
 // untuk body respon
 app.use(express.json());
