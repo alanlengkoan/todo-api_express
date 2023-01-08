@@ -9,14 +9,31 @@ import {
     getDetailTodoItem,
     addTodoItem,
     updTodoItem,
-    delTodoItem
+    delTodoItem,
+    getAllActivityGroup,
+    getDetailActivityGroup,
+    addActivityGroup,
+    updActivityGroup,
+    delActivityGroup,
 } from "../controllers/api.js";
 
 const router = express.Router();
 
 router.get("/", home);
 
-// begin:: api
+// begin:: api activity groups
+router.get("/activity-groups", getAllActivityGroup);
+router.get("/activity-groups/:id", getDetailActivityGroup);
+router.post("/activity-groups", [
+    body("title").notEmpty().withMessage("title cannot be null"),
+], addActivityGroup);
+router.patch("/activity-groups/:id", [
+    body("title").notEmpty().withMessage("title cannot be null"),
+], updActivityGroup);
+router.delete("/activity-groups/:id", delActivityGroup);
+// end:: api activity groups
+
+// begin:: api todo
 router.get("/todo-items", getAllTodoItem);
 router.get("/todo-items/:id", getDetailTodoItem);
 router.post("/todo-items", [
@@ -27,6 +44,6 @@ router.patch("/todo-items/:id", [
     body("title").notEmpty().withMessage("title cannot be null"),
 ], updTodoItem);
 router.delete("/todo-items/:id", delTodoItem);
-// end:: api
+// end:: api todo
 
 export default router;
