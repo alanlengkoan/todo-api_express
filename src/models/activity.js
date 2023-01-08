@@ -4,7 +4,7 @@ import {
 
 import sequelize from "./../configs/database.js";
 
-const Todo = sequelize.define('Todo', {
+const Activity = sequelize.define('Activity', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -14,16 +14,8 @@ const Todo = sequelize.define('Todo', {
         type: DataTypes.STRING(25),
         allowNull: true
     },
-    activity_group_id: {
-        type: DataTypes.INTEGER,
-        allowNull: true
-    },
-    is_active: {
-        type: DataTypes.BOOLEAN,
-        allowNull: true
-    },
-    priority: {
-        type: DataTypes.STRING(10),
+    email: {
+        type: DataTypes.STRING(50),
         allowNull: true
     },
     created_at: {
@@ -39,11 +31,11 @@ const Todo = sequelize.define('Todo', {
         allowNull: true
     }
 }, {
-    tableName: 'todo',
+    tableName: 'activity',
     timestamps: false
 });
 
-Todo.prototype.purge = function () {
+Activity.prototype.purge = function () {
     const clean = {};
     for (const key of Object.keys(this.dataValues)) {
         if (!secrets.includes(key)) {
@@ -53,8 +45,10 @@ Todo.prototype.purge = function () {
     return clean;
 };
 
-Todo.sync({force: true});
+Activity.sync({
+    force: true
+});
 
 export {
-    Todo
+    Activity
 }
