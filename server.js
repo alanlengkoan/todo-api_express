@@ -21,7 +21,7 @@ app.use(router);
 
 // untuk host
 const port = 3030;
-const host = "localhost";
+const host = "0.0.0.0";
 
 app.listen(port, host, () => {
     console.log(`Server sedang berjalan pada http://${host}:${port}`);
