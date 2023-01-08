@@ -39,7 +39,7 @@ const Todo = sequelize.define('Todo', {
         allowNull: true
     }
 }, {
-    tableName: 'todo',
+    tableName: 'todos',
     timestamps: false
 });
 

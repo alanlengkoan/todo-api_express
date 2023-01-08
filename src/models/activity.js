@@ -31,7 +31,7 @@ const Activity = sequelize.define('Activity', {
         allowNull: true
     }
 }, {
-    tableName: 'activity',
+    tableName: 'activities',
     timestamps: false
 });
 
