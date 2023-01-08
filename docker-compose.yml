@@ -5,7 +5,7 @@ services:
     container_name: my-mysql
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
-    restart: unless-stopped
+    restart: always
     environment:
       - MYSQL_DATABASE=${DB_NAME}
       - MYSQL_USER=${DB_USER} 
@@ -15,6 +15,16 @@ services:
       - 3306
     ports:
       - 3306:3306
+  
+  management_mysql:
+    image: phpmyadmin/phpmyadmin
+    container_name: my-management-mysql
+    environment:
+      PMA_HOST: mysqldb
+    links:
+      - mysqldb:database
+    ports:
+      - '8081:80'
 
   nodeapp:
     container_name: my-app
@@ -29,6 +39,6 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
-      - DB_PORT=3306
+      - DB_PORT=${DB_PORT}
     depends_on:
       - mysqldb
