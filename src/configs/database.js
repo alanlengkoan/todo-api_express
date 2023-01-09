@@ -7,10 +7,9 @@ dotEnv.config({
     path: './.env',
 });
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+const sequelize = new Sequelize(process.env.MYSQL_DBNAME, process.env.MYSQL_USER, process.env.MYSQL_PASSWORD, {
     dialect: 'mysql',
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT
+    host: process.env.MYSQL_HOST,
 });
 
 export default sequelize;

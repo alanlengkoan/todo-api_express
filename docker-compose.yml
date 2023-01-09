@@ -8,14 +8,14 @@ services:
     restart: always
     environment:
       - MYSQL_DATABASE=${DB_NAME}
-      - MYSQL_USER=${DB_USER} 
-      - MYSQL_PASSWORD=${DB_PASSWORD} 
-      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD} 
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
     expose:
       - 3306
     ports:
       - 3306:3306
-  
+
   management_mysql:
     image: phpmyadmin/phpmyadmin
     container_name: my-management-mysql
