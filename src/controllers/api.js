@@ -201,14 +201,8 @@ const delTodoItem = (req, res) => {
         const todo = results.filter((n) => n.id == id)[0];
 
         if (todo !== undefined) {
-            const deleted_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
-
-            const data = {
-                deleted_at: deleted_at
-            };
-
             try {
-                await Todo.update(data, {
+                await Todo.update({
                     where: {
                         id: id
                     }
@@ -409,14 +403,8 @@ const delActivityGroup = (req, res) => {
         const activity = results.filter((n) => n.id == id)[0];
 
         if (activity !== undefined) {
-            const deleted_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
-
-            const data = {
-                deleted_at: deleted_at
-            };
-
             try {
-                await Activity.update(data, {
+                await Activity.destroy({
                     where: {
                         id: id
                     }
