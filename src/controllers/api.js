@@ -1,7 +1,4 @@
 import {
-    customAlphabet
-} from "nanoid";
-import {
     validationResult
 } from "express-validator";
 
@@ -305,13 +302,21 @@ const addActivityGroup = async (req, res) => {
             updated_at: updated_at
         };
 
-        const activity = await Activity.create(data);
+        try {
+            const activity = await Activity.create(data);
 
-        res.status(201).json({
-            status: "Success",
-            message: "Success",
-            data: activity.toJSON()
-        });
+            res.status(201).json({
+                status: "Success",
+                message: "Success",
+                data: activity.toJSON()
+            });
+        } catch (error) {
+            res.status(400).json({
+                status: "Bad Request",
+                message: error,
+                data: {}
+            });
+        }
     }
 };
 
@@ -340,29 +345,37 @@ const updActivityGroup = (req, res) => {
                     updated_at: updated_at
                 };
 
-                await Activity.update(data, {
-                    where: {
-                        id: id
-                    }
-                });
-
-                Activity.findAll({
-                    where: {
-                        id: id
-                    }
-                }).then((results) => {
-                    res.status(200).json({
-                        status: "Success",
-                        message: "Success",
-                        data: results[0].toJSON()
+               try {
+                    await Activity.update(data, {
+                        where: {
+                            id: id
+                        }
                     });
-                }).catch((error) => {
+
+                    Activity.findAll({
+                        where: {
+                            id: id
+                        }
+                    }).then((results) => {
+                        res.status(200).json({
+                            status: "Success",
+                            message: "Success",
+                            data: results[0].toJSON()
+                        });
+                    }).catch((error) => {
+                        res.status(400).json({
+                            status: "Bad Request",
+                            message: error,
+                            data: {}
+                        });
+                    });
+                } catch (error) {
                     res.status(400).json({
                         status: "Bad Request",
                         message: error,
                         data: {}
                     });
-                });
+                }
             }
         } else {
             res.status(404).json({
@@ -387,8 +400,14 @@ const delActivityGroup = (req, res) => {
         const activity = results.filter((n) => n.id == id)[0];
 
         if (activity !== undefined) {
+            const deleted_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+            const data = {
+                deleted_at: deleted_at
+            };
+
             try {
-                await Activity.destroy({
+                await Activity.update(data, {
                     where: {
                         id: id
                     }
@@ -421,6 +440,7 @@ const delActivityGroup = (req, res) => {
         });
     });
 };
+
 
 export {
     home,
