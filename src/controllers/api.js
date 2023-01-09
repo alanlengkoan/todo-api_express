@@ -258,17 +258,17 @@ const getDetailActivityGroup = (req, res) => {
     Activity.findAll().then((results) => {
         const activity = results.filter((n) => n.id == id)[0];
 
-        if (activity !== undefined) {
-            res.status(200).json({
-                status: "Success",
-                message: "Success",
-                data: activity,
-            });
-        } else {
+        if (activity === undefined) {
             res.status(404).json({
                 status: "Not Found",
                 message: `Activity with ID ${id} Not Found`,
                 data: {},
+            });
+        } else {
+            res.status(200).json({
+                status: "Success",
+                message: "Success",
+                data: activity,
             });
         }
     }).catch((error) => {
@@ -305,21 +305,13 @@ const addActivityGroup = async (req, res) => {
             updated_at: updated_at
         };
 
-        try {
-            const activity = await Activity.create(data);
+        const activity = await Activity.create(data);
 
-            res.status(201).json({
-                status: "Success",
-                message: "Success",
-                data: activity.toJSON()
-            });
-        } catch (error) {
-            res.status(400).json({
-                status: "Bad Request",
-                message: error,
-                data: {}
-            });
-        }
+        res.status(201).json({
+            status: "Success",
+            message: "Success",
+            data: activity.toJSON()
+        });
     }
 };
 
@@ -348,37 +340,29 @@ const updActivityGroup = (req, res) => {
                     updated_at: updated_at
                 };
 
-                try {
-                    await Activity.update(data, {
-                        where: {
-                            id: id
-                        }
-                    });
+                await Activity.update(data, {
+                    where: {
+                        id: id
+                    }
+                });
 
-                    Activity.findAll({
-                        where: {
-                            id: id
-                        }
-                    }).then((results) => {
-                        res.status(200).json({
-                            status: "Success",
-                            message: "Success",
-                            data: results[0].toJSON()
-                        });
-                    }).catch((error) => {
-                        res.status(400).json({
-                            status: "Bad Request",
-                            message: error,
-                            data: {}
-                        });
+                Activity.findAll({
+                    where: {
+                        id: id
+                    }
+                }).then((results) => {
+                    res.status(200).json({
+                        status: "Success",
+                        message: "Success",
+                        data: results[0].toJSON()
                     });
-                } catch (error) {
+                }).catch((error) => {
                     res.status(400).json({
                         status: "Bad Request",
                         message: error,
                         data: {}
                     });
-                }
+                });
             }
         } else {
             res.status(404).json({
@@ -402,31 +386,23 @@ const delActivityGroup = (req, res) => {
     Activity.findAll().then(async (results) => {
         const activity = results.filter((n) => n.id == id)[0];
 
-        if (activity !== undefined) {
-            try {
-                await Activity.destroy({
-                    where: {
-                        id: id
-                    }
-                });
-
-                res.status(200).json({
-                    status: "Success",
-                    message: "Success",
-                    data: {}
-                });
-            } catch (error) {
-                res.status(400).json({
-                    status: "Bad Request",
-                    message: error,
-                    data: {}
-                });
-            }
-        } else {
+        if (activity === undefined) {
             res.status(404).json({
                 status: "Not Found",
                 message: `Activity with ID ${id} Not Found`,
                 data: {},
+            });
+        } else {
+            await Activity.destroy({
+                where: {
+                    id: id
+                }
+            });
+
+            res.status(200).json({
+                status: "Success",
+                message: "Success",
+                data: {}
             });
         }
     }).catch((error) => {
