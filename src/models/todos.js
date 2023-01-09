@@ -11,7 +11,7 @@ const Todo = sequelize.define('Todo', {
         autoIncrement: true
     },
     title: {
-        type: DataTypes.STRING(25),
+        type: DataTypes.STRING(100),
         allowNull: true
     },
     activity_group_id: {
@@ -23,7 +23,7 @@ const Todo = sequelize.define('Todo', {
         allowNull: true
     },
     priority: {
-        type: DataTypes.STRING(10),
+        type: DataTypes.STRING(25),
         allowNull: true
     },
     created_at: {

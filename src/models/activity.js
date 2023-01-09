@@ -11,11 +11,11 @@ const Activity = sequelize.define('Activity', {
         autoIncrement: true
     },
     title: {
-        type: DataTypes.STRING(25),
+        type: DataTypes.STRING(100),
         allowNull: true
     },
     email: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING(100),
         allowNull: true
     },
     created_at: {
