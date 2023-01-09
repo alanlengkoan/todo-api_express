@@ -40,9 +40,7 @@ router.post("/todo-items", [
     body("title").notEmpty().withMessage("title cannot be null"),
     body("activity_group_id").notEmpty().withMessage("activity_group_id cannot be null")
 ], addTodoItem);
-router.patch("/todo-items/:id", [
-    body("title").notEmpty().withMessage("title cannot be null"),
-], updTodoItem);
+router.patch("/todo-items/:id", updTodoItem);
 router.delete("/todo-items/:id", delTodoItem);
 // end:: api todo
 
