@@ -59,7 +59,7 @@ const getDetailTodoItem = (req, res) => {
         } else {
             res.status(404).json({
                 status: "Not Found",
-                message: `Todo with ID ${id} Not Found!`,
+                message: `Todo with ID ${id} Not Found`,
                 data: {},
             });
         }
@@ -104,7 +104,7 @@ const addTodoItem = async (req, res) => {
         try {
             const todo = await Todo.create(data);
 
-            res.status(200).json({
+            res.status(201).json({
                 status: "Success",
                 message: "Success",
                 data: todo.toJSON()
@@ -181,7 +181,7 @@ const updTodoItem = (req, res) => {
         } else {
             res.status(404).json({
                 status: "Not Found",
-                message: `Todo with ID ${id} Not Found!`,
+                message: `Todo with ID ${id} Not Found`,
                 data: {},
             });
         }
@@ -229,7 +229,7 @@ const delTodoItem = (req, res) => {
         } else {
             res.status(404).json({
                 status: "Not Found",
-                message: `Todo with ID ${id} Not Found!`,
+                message: `Todo with ID ${id} Not Found`,
                 data: {},
             });
         }
@@ -273,7 +273,7 @@ const getDetailActivityGroup = (req, res) => {
         } else {
             res.status(404).json({
                 status: "Not Found",
-                message: `Activity with ID ${id} Not Found!`,
+                message: `Activity with ID ${id} Not Found`,
                 data: {},
             });
         }
@@ -314,7 +314,7 @@ const addActivityGroup = async (req, res) => {
         try {
             const activity = await Activity.create(data);
 
-            res.status(200).json({
+            res.status(201).json({
                 status: "Success",
                 message: "Success",
                 data: activity.toJSON()
@@ -389,7 +389,7 @@ const updActivityGroup = (req, res) => {
         } else {
             res.status(404).json({
                 status: "Not Found",
-                message: `Activity with ID ${id} Not Found!`,
+                message: `Activity with ID ${id} Not Found`,
                 data: {},
             });
         }
@@ -437,7 +437,7 @@ const delActivityGroup = (req, res) => {
         } else {
             res.status(404).json({
                 status: "Not Found",
-                message: `Activity with ID ${id} Not Found!`,
+                message: `Activity with ID ${id} Not Found`,
                 data: {},
             });
         }
