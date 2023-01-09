@@ -45,10 +45,10 @@ const getAllTodoItem = (req, res) => {
 };
 
 const getDetailTodoItem = (req, res) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
 
     Todo.findAll().then((results) => {
-        const todo = results.filter((n) => n.id === id)[0];
+        const todo = results.filter((n) => n.id == id)[0];
 
         if (todo !== undefined) {
             res.status(200).json({
@@ -120,10 +120,10 @@ const addTodoItem = async (req, res) => {
 };
 
 const updTodoItem = (req, res) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
 
     Todo.findAll().then(async (results) => {
-        const todo = results.filter((n) => n.id === id)[0];
+        const todo = results.filter((n) => n.id == id)[0];
 
         if (todo !== undefined) {
             const errors = validationResult(req);
@@ -195,10 +195,10 @@ const updTodoItem = (req, res) => {
 };
 
 const delTodoItem = (req, res) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
 
     Todo.findAll().then(async (results) => {
-        const todo = results.filter((n) => n.id === id)[0];
+        const todo = results.filter((n) => n.id == id)[0];
 
         if (todo !== undefined) {
             const deleted_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
@@ -259,10 +259,10 @@ const getAllActivityGroup = (req, res) => {
 };
 
 const getDetailActivityGroup = (req, res) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
 
     Activity.findAll().then((results) => {
-        const activity = results.filter((n) => n.id === id)[0];
+        const activity = results.filter((n) => n.id == id)[0];
 
         if (activity !== undefined) {
             res.status(200).json({
@@ -330,10 +330,10 @@ const addActivityGroup = async (req, res) => {
 };
 
 const updActivityGroup = (req, res) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
 
     Activity.findAll().then(async (results) => {
-        const activity = results.filter((n) => n.id === id)[0];
+        const activity = results.filter((n) => n.id == id)[0];
 
         if (activity !== undefined) {
             const errors = validationResult(req);
@@ -403,10 +403,10 @@ const updActivityGroup = (req, res) => {
 };
 
 const delActivityGroup = (req, res) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
 
     Activity.findAll().then(async (results) => {
-        const activity = results.filter((n) => n.id === id)[0];
+        const activity = results.filter((n) => n.id == id)[0];
 
         if (activity !== undefined) {
             const deleted_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
