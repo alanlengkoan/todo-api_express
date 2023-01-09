@@ -258,17 +258,17 @@ const getDetailActivityGroup = (req, res) => {
     Activity.findAll().then((results) => {
         const activity = results.filter((n) => n.id == id)[0];
 
-        if (activity === undefined) {
-            res.status(404).json({
-                status: "Not Found",
-                message: `Activity with ID ${id} Not Found`,
-                data: {},
-            });
-        } else {
+        if (activity !== undefined) {
             res.status(200).json({
                 status: "Success",
                 message: "Success",
                 data: activity,
+            });
+        } else {
+            res.status(404).json({
+                status: "Not Found",
+                message: `Activity with ID ${id} Not Found`,
+                data: {},
             });
         }
     }).catch((error) => {
@@ -386,23 +386,31 @@ const delActivityGroup = (req, res) => {
     Activity.findAll().then(async (results) => {
         const activity = results.filter((n) => n.id == id)[0];
 
-        if (activity === undefined) {
+        if (activity !== undefined) {
+            try {
+                await Activity.destroy({
+                    where: {
+                        id: id
+                    }
+                });
+
+                res.status(200).json({
+                    status: "Success",
+                    message: "Success",
+                    data: {}
+                });
+            } catch (error) {
+                res.status(400).json({
+                    status: "Bad Request",
+                    message: error,
+                    data: {}
+                });
+            }
+        } else {
             res.status(404).json({
                 status: "Not Found",
                 message: `Activity with ID ${id} Not Found`,
                 data: {},
-            });
-        } else {
-            await Activity.destroy({
-                where: {
-                    id: id
-                }
-            });
-
-            res.status(200).json({
-                status: "Success",
-                message: "Success",
-                data: {}
             });
         }
     }).catch((error) => {
