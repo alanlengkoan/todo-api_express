@@ -131,7 +131,6 @@ const updTodoItem = async (req, res) => {
 
         try {
             await Todo.update({
-                id: id,
                 title: title,
                 is_active: is_active,
                 updated_at: updated_at

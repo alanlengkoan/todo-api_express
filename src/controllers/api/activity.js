@@ -122,7 +122,6 @@ const updActivityGroup = async (req, res) => {
 
         try {
             await Activity.update({
-                id: id,
                 title: title,
                 updated_at: updated_at
             }, {
