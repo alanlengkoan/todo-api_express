@@ -45,10 +45,6 @@ Activity.prototype.purge = function () {
     return clean;
 };
 
-Activity.sync({
-    force: true
-});
-
 export {
     Activity
 }
