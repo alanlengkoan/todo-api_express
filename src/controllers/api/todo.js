@@ -7,8 +7,6 @@ import {
 } from "../../models/todos.js";
 
 const getAllTodoItem = async (req, res) => {
-    req.connection.setTimeout(1000 * 60 * 30);
-
     try {
         const todo = await Todo.findAll();
 
