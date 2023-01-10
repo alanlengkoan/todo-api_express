@@ -5,17 +5,23 @@ import {
 
 import {
     home,
-    getAllTodoItem,
-    getDetailTodoItem,
-    addTodoItem,
-    updTodoItem,
-    delTodoItem,
+} from "../controllers/home.js";
+
+import {
     getAllActivityGroup,
     getDetailActivityGroup,
     addActivityGroup,
     updActivityGroup,
-    delActivityGroup,
-} from "../controllers/api.js";
+    delActivityGroup
+} from "../controllers/api/activity.js";
+
+import {
+    getAllTodoItem,
+    getDetailTodoItem,
+    addTodoItem,
+    updTodoItem,
+    delTodoItem
+} from "../controllers/api/todo.js";
 
 const router = express.Router();
 
