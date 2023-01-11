@@ -53,8 +53,6 @@ Todo.prototype.purge = function () {
     return clean;
 };
 
-Todo.sync({force: true});
-
 export {
     Todo
 }
